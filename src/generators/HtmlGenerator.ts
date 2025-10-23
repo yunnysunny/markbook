@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * 获取文件名
    */
   private getFileName(title: string): string {
-    return title
+    return encodeURIComponent(title)
       .toLowerCase()
       .replace(/[^\w\s-]/g, '')
       .replace(/\s+/g, '-')

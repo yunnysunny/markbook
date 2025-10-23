@@ -137,7 +137,7 @@ export class GitBookParser {
         }
       }
     } catch (error) {
-      console.warn(`无法读取目录: ${dirPath}`);
+      console.warn(`无法读取目录: ${dirPath}`, error);
     }
     
     return files;

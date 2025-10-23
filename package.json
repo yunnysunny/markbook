@@ -31,6 +31,8 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "@swc/core": "^1.13.5",
+    "@swc/jest": "^0.2.39",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.0",
     "@types/marked": "^6.0.0",
