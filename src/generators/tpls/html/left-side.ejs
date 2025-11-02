@@ -1,0 +1,29 @@
+<%
+function generateSidebarItems(nodes, level) {
+  let html = '';
+  for (const node of nodes) {
+    const indent = '  '.repeat(level);
+    const fileName = node.path
+      ? getFileName(node.title) + '.html'
+      : 'index.html';
+
+    html += `
+${indent}<div class="sidebar-item level-${level}">
+${indent}  <a href="${fileName}" class="sidebar-link">${node.title}</a>
+`;
+
+    if (node.children && node.children.length > 0) {
+      html += `
+${indent}  <div class="sidebar-children">
+${generateSidebarItems(node.children, level + 1)}
+${indent}  </div>
+`;
+    }
+
+    html += `${indent}</div>\n`;
+  }
+  return html;
+}
+%>
+
+<%- generateSidebarItems(nodes, 0) %>

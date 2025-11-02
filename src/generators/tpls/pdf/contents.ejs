@@ -1,0 +1,18 @@
+<%
+for (const node of data) {
+    if (node.content) {
+    %>
+    <div class="content">
+        <h1><%= node.title %></h1>
+        <%- node.content %>
+    </div>
+<%        
+    添加分页符（除了最后一个）
+        if (node !== data[data.length - 1]) {
+        %>
+        <div class="page-break"></div>
+        <%
+        }
+    }
+}
+%>

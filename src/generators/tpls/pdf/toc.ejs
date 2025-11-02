@@ -1,0 +1,23 @@
+<%
+function generateTocItems(nodes, level = 0) {
+  let html = '<ul class="toc-list">';
+  for (const node of nodes) {
+    html += `
+      <li class="toc-item level-${level}">
+        <a href="#${node.id || ''}" class="toc-link">${node.title}</a>
+    `;
+
+    if (node.children && node.children.length > 0) {
+      html += `<div class="toc-children">`;
+      html += generateTocItems(node.children, level + 1);
+      html += `</div>`;
+    }
+
+    html += `</li>`;
+  }
+  html += `</ul>`;
+  return html;
+}
+%>
+
+<%- generateTocItems(nodes) %>

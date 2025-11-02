@@ -2,6 +2,8 @@
 import { marked } from 'marked';
 import { MarkdownFile, Heading } from '../types/index.js';
 import { readFile, generateHeadingId } from '../utils/index.js';
+// import { Slogger } from 'node-slogger';
+// const logger = new Slogger();
 
 export class MarkdownParser {
   private marked: typeof marked;
@@ -34,13 +36,14 @@ export class MarkdownParser {
    * 提取标题结构
    */
   private extractHeadings(content: string): Heading[] {
-    const normalized = content.replace(/\r\n?/g, '\n');
-    const lines = normalized.split('\n');
+    const normalizedStr = content.replace(/\r\n?/g, '\n');
+    const lines = normalizedStr.split('\n');
+    // logger.info('normalized', normalizedStr);
     const headings: Heading[] = [];
     const stack: Heading[] = [];
 
     for (const line of lines) {
-      const match = line.match(/^(#{1,6})\s+(.+)$/);
+      const match = line.trim().match(/^(#{1,6})\s+(.+)$/);
       if (match) {
         const level = match[1].length;
         const text = match[2].trim();
