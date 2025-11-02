@@ -31,7 +31,13 @@ export class HtmlGenerator extends AbstractGenerator {
    * 生成主页面
    */
   private async generateIndexPage(tree: TreeNode, title: string): Promise<void> {
-    const html = await this.generateHtmlTemplate(title, tree, tree.children[0]?.content || '');
+    const html = await this.generateHtmlTemplate({
+      title,
+      path: tree.children[0]?.path as string,
+      content: tree.children[0]?.content || '',
+      headings: tree.children[0]?.headings || [],
+      children: tree.children[0]?.children || [],
+    }, tree);
     const indexPath = join(this.outputDir, 'index.html');
     await writeFile(indexPath, html, 'utf-8');
   }
@@ -42,7 +48,7 @@ export class HtmlGenerator extends AbstractGenerator {
   private async generateDocumentPages(tree: TreeNode): Promise<void> {
     await Promise.all(tree.children.map(async (node) => {
       if (node.content) {
-        const html = await this.generateHtmlTemplate(node.title, tree, node.content, node.headings);
+        const html = await this.generateHtmlTemplate(node, tree);
         const fileName = this.getFileName(node.title) + '.html';
         const filePath = join(this.outputDir, fileName);
         await writeFile(filePath, html, 'utf-8');
@@ -53,12 +59,15 @@ export class HtmlGenerator extends AbstractGenerator {
   /**
    * 生成 HTML 模板
    */
-  private async generateHtmlTemplate(title: string, tree: TreeNode, content: string, headings?: Heading[]): Promise<string> {
+  private async generateHtmlTemplate(node: TreeNode, tree: TreeNode): Promise<string> {
     const sidebar = await this.generateSidebar(tree);
-    const toc = headings ? await this.generateTableOfContents(headings) : '';
-    const htmlContent = await this.markdownParser.toHtml(content);
+    const toc = node.headings ? await this.generateTableOfContents(node.headings) : '';
+    const htmlContent = await this.markdownParser.toHtml(node.content as string, {
+      contentPath: node.path as string,
+      destDir: this.outputDir,
+    });
     const html = await this.render('page.ejs', {
-      title,
+      title: node.title,
       sidebar,
       toc,
       htmlContent,

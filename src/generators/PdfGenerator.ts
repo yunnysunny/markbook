@@ -91,7 +91,10 @@ export class PdfGenerator extends AbstractGenerator {
       if (node.content) {
       data.push({
           title: node.title,
-          content: await this.markdownParser.toHtml(node.content),
+          content: await this.markdownParser.toHtml(node.content, {
+            contentPath: node.path as string,
+            destDir: this.outputDir,
+          }),
         })
       }
     }

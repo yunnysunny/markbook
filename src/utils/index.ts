@@ -1,7 +1,10 @@
 // 工具函数
 import { readFileSync, existsSync } from 'fs';
 import { join, extname, basename } from 'path';
-
+import { mkdir } from 'fs/promises';
+export async function mkdirAsync(path: string): Promise<string | undefined> {
+  return await mkdir(path, { recursive: true });
+}
 /**
  * 读取文件内容
  */

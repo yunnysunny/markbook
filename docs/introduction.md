@@ -2,6 +2,8 @@
 
 欢迎使用 GitBook 解析器！
 
+![logo](./images/logo.png)
+
 ## 什么是 GitBook 解析器？
 
 GitBook 解析器是一个强大的工具，可以将 markdown 文件转换为：

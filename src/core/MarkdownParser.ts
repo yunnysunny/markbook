@@ -1,9 +1,9 @@
 // Markdown 解析器
-import { marked } from 'marked';
+import { marked, Token } from 'marked';
 import { MarkdownFile, Heading } from '../types/index.js';
-import { readFile, generateHeadingId } from '../utils/index.js';
-// import { Slogger } from 'node-slogger';
-// const logger = new Slogger();
+import { readFile, generateHeadingId, mkdirAsync } from '../utils/index.js';
+import { dirname, join } from 'path';
+import { copyFile } from 'fs/promises';
 
 export class MarkdownParser {
   private marked: typeof marked;
@@ -14,7 +14,9 @@ export class MarkdownParser {
       gfm: true,
       breaks: true
     });
+
   }
+
 
   /**
    * 解析 markdown 文件
@@ -96,7 +98,31 @@ export class MarkdownParser {
   /**
    * 将 markdown 转换为 HTML
    */
-  async toHtml(content: string): Promise<string> {
-    return await this.marked(content);
+  async toHtml(content: string, options: {
+    contentPath: string
+    destDir: string
+  }): Promise<string> {
+    const html = await this.marked(content, {
+      walkTokens: async (token: Token) => {
+        if (token.type === 'image') {
+          const src = token.href;
+          if (
+            !src
+            || src.startsWith('http')
+            || src.startsWith('data:image/')
+            || src.startsWith('blob:')
+            || src.startsWith('//')
+          ) {
+            return;
+          }
+          const imageFromPath = join(dirname(options.contentPath), src);
+          const imageToPath = join(options.destDir, src);
+          const imageToDir = dirname(imageToPath);
+          await mkdirAsync(imageToDir);
+          await copyFile(imageFromPath, imageToPath);
+        }
+      },
+    });
+    return html
   }
 }
