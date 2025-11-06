@@ -1,7 +1,7 @@
 // 主入口文件
-export { GitBookParser } from './core/GitBookParser.js';
-export { MarkdownParser } from './core/MarkdownParser.js';
-export { HtmlGenerator } from './generators/HtmlGenerator.js';
-export { PdfGenerator } from './generators/PdfGenerator.js';
-export * from './types/index.js';
-export * from './utils/index.js';
+export { GitBookParser } from './core/GitBookParser';
+export { MarkdownParser } from './core/MarkdownParser';
+export { HtmlGenerator } from './generators/HtmlGenerator';
+export { PdfGenerator } from './generators/PdfGenerator';
+export * from './types';
+export * from './utils';

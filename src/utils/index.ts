@@ -27,12 +27,12 @@ export function isMarkdownFile(filePath: string): boolean {
  * 生成标题 ID（用于锚点）
  */
 export function generateHeadingId(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // 移除特殊字符
-    .replace(/\s+/g, '-') // 空格替换为连字符
-    .replace(/-+/g, '-') // 多个连字符合并为一个
-    .trim();
+  return encodeURIComponent(text)
+      .toLowerCase()
+      // .replace(/[^\w\s-]/g, '')
+      // .replace(/\s+/g, '-')
+      // .replace(/-+/g, '-')
+      .trim();
 }
 
 /**

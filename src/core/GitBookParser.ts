@@ -1,9 +1,9 @@
 // GitBook 解析器
 import { readdirSync, statSync, readFileSync } from 'fs';
-import { join, extname, dirname } from 'path';
-import { MarkdownFile, TreeNode, ParserOptions } from '../types/index.js';
-import { MarkdownParser } from './MarkdownParser.js';
-import { isMarkdownFile, normalizePath } from '../utils/index.js';
+import { join, dirname } from 'path';
+import { MarkdownFile, TreeNode, ParserOptions } from '../types';
+import { MarkdownParser } from './MarkdownParser';
+import { isMarkdownFile } from '../utils';
 
 export class GitBookParser {
   private markdownParser: MarkdownParser;

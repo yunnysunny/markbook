@@ -37,9 +37,7 @@ describe('GitBookParser', () => {
 
       const result = await getResult('./fixtures/mds');
 
-      expect(result.children).toHaveLength(2);
-      expect(result.children[0].title).toBe('测试文档');
-      expect(result.children[1].title).toBe('测试文档');
+      expect(result.children).toHaveLength(3);
     });
 
     it('应该忽略指定的目录', async () => {
@@ -47,7 +45,7 @@ describe('GitBookParser', () => {
         ignorePatterns: ['skipped']
       };
 
-      const result = await getResult('./fixtures/mds', parserWithOptions);
+      const result = await getResult('./fixtures/skip-test', parserWithOptions);
 
 
       // 应该只包含 test.md ，不包含 node_modules

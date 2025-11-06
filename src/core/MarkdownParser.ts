@@ -1,7 +1,7 @@
 // Markdown 解析器
 import { marked, Token } from 'marked';
 import { MarkdownFile, Heading } from '../types/index.js';
-import { readFile, generateHeadingId, mkdirAsync } from '../utils/index.js';
+import { readFile, generateHeadingId, mkdirAsync } from '../utils';
 import { dirname, join } from 'path';
 import { copyFile } from 'fs/promises';
 
