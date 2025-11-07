@@ -1,9 +1,9 @@
 // GitBook 解析器
-import { readdirSync, statSync, readFileSync } from 'fs';
+import { readdirSync, statSync } from 'fs';
 import { join, dirname } from 'path';
 import { MarkdownFile, TreeNode, ParserOptions } from '../types';
 import { MarkdownParser } from './MarkdownParser';
-import { isMarkdownFile } from '../utils';
+import { isMarkdownFile, readFile } from '../utils';
 
 export class GitBookParser {
   private markdownParser: MarkdownParser;
@@ -63,7 +63,7 @@ export class GitBookParser {
    * 解析入口文件
    */
   private async parseEntryFile(entryFilePath: string, rootNode: TreeNode): Promise<void> {
-    const content = readFileSync(entryFilePath, { encoding: this.options.encoding as BufferEncoding });
+    const content = await readFile(entryFilePath, this.options.encoding as BufferEncoding);
     const lines = content.split('\n');
 
     for (const line of lines) {
@@ -148,7 +148,7 @@ export class GitBookParser {
    */
   private async parseMarkdownFile(filePath: string): Promise<MarkdownFile | null> {
     try {
-      return this.markdownParser.parseFile(filePath);
+      return await this.markdownParser.parseFile(filePath);
     } catch (error) {
       console.warn(`解析文件失败: ${filePath}`, error);
       return null;

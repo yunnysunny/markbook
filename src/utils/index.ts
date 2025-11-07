@@ -1,18 +1,18 @@
 // 工具函数
-import { readFileSync, existsSync } from 'fs';
-import { join, extname, basename } from 'path';
-import { mkdir } from 'fs/promises';
+import { extname, basename } from 'path';
+import { mkdir, access, readFile as fsReadFile, constants } from 'fs/promises';
+
 export async function mkdirAsync(path: string): Promise<string | undefined> {
   return await mkdir(path, { recursive: true });
 }
 /**
  * 读取文件内容
  */
-export function readFile(filePath: string, encoding: BufferEncoding = 'utf-8'): string {
-  if (!existsSync(filePath)) {
-    throw new Error(`文件不存在: ${filePath}`);
-  }
-  return readFileSync(filePath, encoding);
+export async function readFile(
+  filePath: string, encoding: BufferEncoding = 'utf-8'
+): Promise<string> {
+  await access(filePath, constants.F_OK);
+  return await fsReadFile(filePath, encoding);
 }
 
 /**

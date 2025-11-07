@@ -21,8 +21,8 @@ export class MarkdownParser {
   /**
    * 解析 markdown 文件
    */
-  parseFile(filePath: string): MarkdownFile {
-    const content = readFile(filePath);
+  async parseFile(filePath: string): Promise<MarkdownFile> {
+    const content = await readFile(filePath);
     const headings = this.extractHeadings(content);
     const title = this.extractTitle(content, headings);
     

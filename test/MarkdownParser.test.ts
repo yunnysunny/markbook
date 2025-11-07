@@ -1,11 +1,6 @@
 // MarkdownParser 测试
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { readFileSync } from 'fs';
-import { MarkdownParser } from '../core/MarkdownParser.js';
-import { MarkdownFile, Heading } from '../types/index.js';
-
-// 模拟 fs 模块
-jest.mock('fs');
+import * as utils from '../src/utils';
+import { MarkdownParser } from '../src/core/MarkdownParser';
 
 describe('MarkdownParser', () => {
   let parser: MarkdownParser;
@@ -29,7 +24,7 @@ describe('MarkdownParser', () => {
 
 这是三级标题的内容。`;
 
-      (readFileSync as jest.Mock).mockReturnValue(mockContent);
+      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = parser.parseFile('test.md');
 
@@ -64,7 +59,7 @@ describe('MarkdownParser', () => {
 
     it('应该处理没有标题的文件', () => {
       const mockContent = '这是没有标题的内容。\n\n只有普通文本。';
-      (readFileSync as jest.Mock).mockReturnValue(mockContent);
+      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = parser.parseFile('test.md');
 
@@ -85,7 +80,7 @@ describe('MarkdownParser', () => {
 
 子内容`;
 
-      (readFileSync as jest.Mock).mockReturnValue(mockContent);
+      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = parser.parseFile('test.md');
 
@@ -105,7 +100,7 @@ describe('MarkdownParser', () => {
 
 内容`;
 
-      (readFileSync as jest.Mock).mockReturnValue(mockContent);
+      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = parser.parseFile('test.md');
 
@@ -129,7 +124,10 @@ describe('MarkdownParser', () => {
 console.log('Hello World');
 \`\`\``;
 
-      const html = await parser.toHtml(markdown);
+      const html = await parser.toHtml(markdown, {
+        contentPath: 'test.md',
+        destDir: 'test.html'
+      });
 
       expect(html).toContain('<h1>标题</h1>');
       expect(html).toContain('<strong>粗体</strong>');
@@ -141,12 +139,18 @@ console.log('Hello World');
     });
 
     it('应该处理空内容', async () => {
-      const html = await parser.toHtml('');
+      const html = await parser.toHtml('', {
+        contentPath: 'test.md',
+        destDir: 'test.html'
+      });
       expect(html).toBe('');
     });
 
     it('应该处理纯文本', async () => {
-      const html = await parser.toHtml('纯文本内容');
+      const html = await parser.toHtml('纯文本内容', {
+        contentPath: 'test.md',
+        destDir: 'test.html'
+      });
       expect(html).toContain('纯文本内容');
     });
   });
