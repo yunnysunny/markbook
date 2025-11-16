@@ -1,9 +1,10 @@
 // GitBookParser 测试
-import { readdirSync, statSync, readFileSync } from 'fs';
+
+// GitBookParser 测试
+import fs, { readdirSync, readFileSync, statSync } from 'fs';
 import path from 'path';
-import fs from 'fs';
 import { GitBookParser } from '../src/core/GitBookParser';
-import { TreeNode, MarkdownFile, ParserOptions } from '../src/types';
+import type { MarkdownFile, ParserOptions, TreeNode } from '../src/types';
 import * as utils from '../src/utils';
 
 // 模拟 fs 模块
@@ -35,7 +36,6 @@ describe('GitBookParser', () => {
     });
 
     it('应该扫描目录中的 markdown 文件', async () => {
-
       const result = await getResult('./fixtures/mds');
 
       expect(result.children).toHaveLength(3);
@@ -43,11 +43,10 @@ describe('GitBookParser', () => {
 
     it('应该忽略指定的目录', async () => {
       const parserWithOptions: ParserOptions = {
-        ignorePatterns: ['skipped']
+        ignorePatterns: ['skipped'],
       };
 
       const result = await getResult('./fixtures/skip-test', parserWithOptions);
-
 
       // 应该只包含 test.md ，不包含 node_modules
       expect(result.children).toHaveLength(1);
@@ -55,12 +54,14 @@ describe('GitBookParser', () => {
 
     it('应该处理解析失败的文件', async () => {
       const originalReadFile = utils.readFile;
-      jest.spyOn(utils, 'readFile').mockImplementation(async (filename, options) => {
-        if (filename.toString().endsWith('error.md')) {
-          throw new Error('文件读取错误');
-        }
-        return await originalReadFile.call(utils, filename, options);
-      });
+      jest
+        .spyOn(utils, 'readFile')
+        .mockImplementation(async (filename, options) => {
+          if (filename.toString().endsWith('error.md')) {
+            throw new Error('文件读取错误');
+          }
+          return await originalReadFile.call(utils, filename, options);
+        });
 
       const result = await getResult('./fixtures/with-error');
 
@@ -72,8 +73,6 @@ describe('GitBookParser', () => {
 
   describe.skip('findEntryFile', () => {
     it('应该找到 README.md', () => {
-
-
       const result = (parser as any).findEntryFile('./docs');
 
       expect(result).toBe('./docs/README.md');
@@ -101,8 +100,7 @@ describe('GitBookParser', () => {
     });
 
     it('应该返回 null 当没有入口文件时', () => {
-      (statSync as jest.Mock)
-        .mockReturnValue({ isFile: () => false });
+      (statSync as jest.Mock).mockReturnValue({ isFile: () => false });
 
       const result = (parser as any).findEntryFile('./docs');
 
@@ -124,13 +122,14 @@ describe('GitBookParser', () => {
         path: './introduction.md',
         title: '介绍',
         content: '# 介绍\n\n欢迎使用 GitBook 解析器！',
-        headings: []
+        headings: [],
       };
 
       jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       // 模拟 parseMarkdownFile 方法
-      const parseMarkdownFileSpy = jest.spyOn(parser as any, 'parseMarkdownFile')
+      const parseMarkdownFileSpy = jest
+        .spyOn(parser as any, 'parseMarkdownFile')
         .mockResolvedValue(mockMarkdownFile);
 
       const rootNode: TreeNode = { title: 'Root', children: [] };
@@ -158,12 +157,13 @@ describe('GitBookParser', () => {
         path: './introduction.md',
         title: '介绍',
         content: '# 介绍',
-        headings: []
+        headings: [],
       };
 
       jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
-      const parseMarkdownFileSpy = jest.spyOn(parser as any, 'parseMarkdownFile')
+      const parseMarkdownFileSpy = jest
+        .spyOn(parser as any, 'parseMarkdownFile')
         .mockResolvedValue(mockMarkdownFile);
 
       const rootNode: TreeNode = { title: 'Root', children: [] };
@@ -192,7 +192,7 @@ describe('GitBookParser', () => {
       expect(result).toEqual([
         './docs/test.md',
         './docs/subdir/subtest.md',
-        './docs/README.md'
+        './docs/README.md',
       ]);
     });
 
@@ -203,7 +203,11 @@ describe('GitBookParser', () => {
         .mockReturnValueOnce({ isFile: () => true }) // test.md 是文件
         .mockReturnValueOnce({ isFile: () => true }); // test.html 是文件
 
-      (readdirSync as jest.Mock).mockReturnValue(['test.txt', 'test.md', 'test.html']);
+      (readdirSync as jest.Mock).mockReturnValue([
+        'test.txt',
+        'test.md',
+        'test.html',
+      ]);
 
       const result = (parser as any).getMarkdownFiles('./docs');
 

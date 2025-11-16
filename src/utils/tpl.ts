@@ -1,4 +1,4 @@
-import ejs from "ejs";
+import ejs from 'ejs';
 
 export class Tpl {
   static render(tpl: string, data: any): string {
@@ -9,14 +9,13 @@ export class Tpl {
   }
   static async renderFileAsync(path: string, data: any): Promise<string> {
     return new Promise((resolve, reject) => {
-        ejs.renderFile(path, data, (err, html) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(html);
-            }
-        });
-    })
-        
+      ejs.renderFile(path, data, (err, html) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(html);
+        }
+      });
+    });
   }
 }

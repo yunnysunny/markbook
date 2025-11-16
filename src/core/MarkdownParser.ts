@@ -1,9 +1,10 @@
 // Markdown 解析器
-import { marked, Token } from 'marked';
-import { MarkdownFile, Heading } from '../types/index.js';
-import { readFile, generateHeadingId, mkdirAsync } from '../utils';
-import { dirname, join } from 'path';
+
 import { copyFile } from 'fs/promises';
+import { marked, type Token } from 'marked';
+import { dirname, join } from 'path';
+import type { Heading, MarkdownFile } from '../types/index.js';
+import { generateHeadingId, mkdirAsync, readFile } from '../utils';
 
 export class MarkdownParser {
   private marked: typeof marked;
@@ -12,11 +13,9 @@ export class MarkdownParser {
     this.marked = marked;
     this.marked.setOptions({
       gfm: true,
-      breaks: true
+      breaks: true,
     });
-
   }
-
 
   /**
    * 解析 markdown 文件
@@ -25,12 +24,12 @@ export class MarkdownParser {
     const content = await readFile(filePath);
     const headings = this.extractHeadings(content);
     const title = this.extractTitle(content, headings);
-    
+
     return {
       path: filePath,
       title,
       content,
-      headings
+      headings,
     };
   }
 
@@ -50,12 +49,12 @@ export class MarkdownParser {
         const level = match[1].length;
         const text = match[2].trim();
         const id = generateHeadingId(text);
-        
+
         const heading: Heading = {
           level,
           text,
           id,
-          children: []
+          children: [],
         };
 
         // 找到合适的父级标题
@@ -81,7 +80,7 @@ export class MarkdownParser {
    */
   private extractTitle(content: string, headings: Heading[]): string {
     // 优先使用第一个一级标题
-    const firstH1 = headings.find(h => h.level === 1);
+    const firstH1 = headings.find((h) => h.level === 1);
     if (firstH1) {
       return firstH1.text;
     }
@@ -98,10 +97,13 @@ export class MarkdownParser {
   /**
    * 将 markdown 转换为 HTML
    */
-  async toHtml(content: string, options: {
-    contentPath: string
-    destDir: string
-  }): Promise<string> {
+  async toHtml(
+    content: string,
+    options: {
+      contentPath: string;
+      destDir: string;
+    },
+  ): Promise<string> {
     const html = await this.marked(content, {
       walkTokens: async (token: Token) => {
         if (token.type === 'image') {
@@ -123,6 +125,6 @@ export class MarkdownParser {
         }
       },
     });
-    return html
+    return html;
   }
 }

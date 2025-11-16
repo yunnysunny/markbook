@@ -1,10 +1,11 @@
 // 命令行接口
-import { Command } from 'commander';
+
 import chalk from 'chalk';
+import { Command } from 'commander';
 import { GitBookParser } from './core/GitBookParser.js';
 import { HtmlGenerator } from './generators/HtmlGenerator.js';
 import { PdfGenerator } from './generators/PdfGenerator.js';
-import { GitBookConfig } from './types/index.js';
+import type { GitBookConfig } from './types/index.js';
 
 const program = new Command();
 
@@ -22,16 +23,16 @@ program
   .action(async (options) => {
     try {
       console.log(chalk.blue('🚀 开始生成 HTML 网站...'));
-      
+
       const config: GitBookConfig = {
         input: options.input,
         output: options.output,
         format: 'html',
-        title: options.title
+        title: options.title,
       };
-      
+
       await generateHtml(config);
-      
+
       console.log(chalk.green('✅ HTML 网站生成完成!'));
       console.log(chalk.yellow(`📁 输出目录: ${options.output}`));
     } catch (error) {
@@ -49,16 +50,16 @@ program
   .action(async (options) => {
     try {
       console.log(chalk.blue('🚀 开始生成 PDF 文件...'));
-      
+
       const config: GitBookConfig = {
         input: options.input,
         output: options.output,
         format: 'pdf',
-        title: options.title
+        title: options.title,
       };
-      
+
       await generatePdf(config);
-      
+
       console.log(chalk.green('✅ PDF 文件生成完成!'));
       console.log(chalk.yellow(`📁 输出目录: ${options.output}`));
     } catch (error) {
@@ -76,26 +77,23 @@ program
   .action(async (options) => {
     try {
       console.log(chalk.blue('🚀 开始生成 HTML 网站和 PDF 文件...'));
-      
+
       const htmlConfig: GitBookConfig = {
         input: options.input,
         output: `${options.output}/html`,
         format: 'html',
-        title: options.title
+        title: options.title,
       };
-      
+
       const pdfConfig: GitBookConfig = {
         input: options.input,
         output: `${options.output}/pdf`,
         format: 'pdf',
-        title: options.title
+        title: options.title,
       };
-      
-      await Promise.all([
-        generateHtml(htmlConfig),
-        generatePdf(pdfConfig)
-      ]);
-      
+
+      await Promise.all([generateHtml(htmlConfig), generatePdf(pdfConfig)]);
+
       console.log(chalk.green('✅ HTML 网站和 PDF 文件生成完成!'));
       console.log(chalk.yellow(`📁 HTML 输出目录: ${htmlConfig.output}`));
       console.log(chalk.yellow(`📁 PDF 输出目录: ${pdfConfig.output}`));
@@ -111,7 +109,7 @@ program
 async function generateHtml(config: GitBookConfig): Promise<void> {
   const parser = new GitBookParser();
   const tree = await parser.parseProject(config.input);
-  
+
   const generator = new HtmlGenerator(config.output);
   await generator.generate(tree, config.title);
 }
@@ -122,7 +120,7 @@ async function generateHtml(config: GitBookConfig): Promise<void> {
 async function generatePdf(config: GitBookConfig): Promise<void> {
   const parser = new GitBookParser();
   const tree = await parser.parseProject(config.input);
-  
+
   const generator = new PdfGenerator(config.output);
   await generator.generate(tree, config.title);
 }

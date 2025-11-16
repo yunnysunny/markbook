@@ -1,6 +1,7 @@
 // 工具函数
-import { extname, basename } from 'path';
-import { mkdir, access, readFile as fsReadFile, constants } from 'fs/promises';
+
+import { access, constants, readFile as fsReadFile, mkdir } from 'fs/promises';
+import { basename, extname } from 'path';
 
 export async function mkdirAsync(path: string): Promise<string | undefined> {
   return await mkdir(path, { recursive: true });
@@ -9,7 +10,8 @@ export async function mkdirAsync(path: string): Promise<string | undefined> {
  * 读取文件内容
  */
 export async function readFile(
-  filePath: string, encoding: BufferEncoding = 'utf-8'
+  filePath: string,
+  encoding: BufferEncoding = 'utf-8',
 ): Promise<string> {
   await access(filePath, constants.F_OK);
   return await fsReadFile(filePath, encoding);
@@ -27,12 +29,14 @@ export function isMarkdownFile(filePath: string): boolean {
  * 生成标题 ID（用于锚点）
  */
 export function generateHeadingId(text: string): string {
-  return encodeURIComponent(text)
+  return (
+    encodeURIComponent(text)
       .toLowerCase()
       // .replace(/[^\w\s-]/g, '')
       // .replace(/\s+/g, '-')
       // .replace(/-+/g, '-')
-      .trim();
+      .trim()
+  );
 }
 
 /**

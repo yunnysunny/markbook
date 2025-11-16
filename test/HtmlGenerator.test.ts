@@ -1,8 +1,8 @@
 // HtmlGenerator 测试
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { HtmlGenerator } from '../src/generators/HtmlGenerator';
-import { TreeNode, Heading } from '../src/types';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
+import { HtmlGenerator } from '../src/generators/HtmlGenerator';
+import type { Heading, TreeNode } from '../src/types';
 
 // 模拟 fs 模块
 // jest.mock('fs');
@@ -30,10 +30,10 @@ describe('HtmlGenerator', () => {
                 level: 1,
                 text: '介绍',
                 id: '介绍',
-                children: []
-              }
+                children: [],
+              },
             ],
-            children: []
+            children: [],
           },
           {
             title: '快速开始',
@@ -44,12 +44,12 @@ describe('HtmlGenerator', () => {
                 level: 1,
                 text: '快速开始',
                 id: '快速开始',
-                children: []
-              }
+                children: [],
+              },
             ],
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       };
 
       // (existsSync as jest.Mock).mockReturnValue(false);
@@ -63,7 +63,7 @@ describe('HtmlGenerator', () => {
     it('应该处理空目录树', async () => {
       const mockTree: TreeNode = {
         title: 'Root',
-        children: []
+        children: [],
       };
 
       (existsSync as jest.Mock).mockReturnValue(false);
@@ -82,14 +82,14 @@ describe('HtmlGenerator', () => {
             path: './test.md',
             content: '# 测试\n\n内容',
             headings: [],
-            children: []
+            children: [],
           },
           {
             title: '无内容的文档',
             path: './empty.md',
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       };
 
       (existsSync as jest.Mock).mockReturnValue(false);
@@ -98,7 +98,9 @@ describe('HtmlGenerator', () => {
 
       // 应该只生成有内容的文档页面
       const writeFileCalls = (writeFileSync as jest.Mock).mock.calls;
-      const htmlFiles = writeFileCalls.filter(call => call[0].endsWith('.html'));
+      const htmlFiles = writeFileCalls.filter((call) =>
+        call[0].endsWith('.html'),
+      );
       expect(htmlFiles).toHaveLength(2); // index.html + 1个文档页面
     });
   });
@@ -113,12 +115,16 @@ describe('HtmlGenerator', () => {
             path: './test.md',
             content: '# 测试\n\n内容',
             headings: [],
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       };
 
-      const html = await (generator as any).generateHtmlTemplate('测试标题', mockTree, '# 测试\n\n内容');
+      const html = await (generator as any).generateHtmlTemplate(
+        '测试标题',
+        mockTree,
+        '# 测试\n\n内容',
+      );
 
       expect(html).toContain('<!DOCTYPE html>');
       expect(html).toContain('<title>测试标题</title>');
@@ -136,19 +142,23 @@ describe('HtmlGenerator', () => {
             path: './doc1.md',
             content: '# 文档1',
             headings: [],
-            children: []
+            children: [],
           },
           {
             title: '文档2',
             path: './doc2.md',
             content: '# 文档2',
             headings: [],
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       };
 
-      const html = await (generator as any).generateHtmlTemplate('测试标题', mockTree, '# 内容');
+      const html = await (generator as any).generateHtmlTemplate(
+        '测试标题',
+        mockTree,
+        '# 内容',
+      );
 
       expect(html).toContain('<aside class="sidebar">');
       expect(html).toContain('<nav class="sidebar-nav">');
@@ -167,18 +177,23 @@ describe('HtmlGenerator', () => {
               level: 2,
               text: '子标题',
               id: '子标题',
-              children: []
-            }
-          ]
-        }
+              children: [],
+            },
+          ],
+        },
       ];
 
       const mockTree: TreeNode = {
         title: 'Root',
-        children: []
+        children: [],
       };
 
-      const html = await (generator as any).generateHtmlTemplate('测试标题', mockTree, '# 内容', mockHeadings);
+      const html = await (generator as any).generateHtmlTemplate(
+        '测试标题',
+        mockTree,
+        '# 内容',
+        mockHeadings,
+      );
 
       expect(html).toContain('<aside class="toc">');
       expect(html).toContain('<h3>目录</h3>');
@@ -203,18 +218,18 @@ describe('HtmlGenerator', () => {
                 path: './subdoc1.md',
                 content: '# 子文档1',
                 headings: [],
-                children: []
-              }
-            ]
+                children: [],
+              },
+            ],
           },
           {
             title: '文档2',
             path: './doc2.md',
             content: '# 文档2',
             headings: [],
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       };
 
       const sidebar = (generator as any).generateSidebar(mockTree);
@@ -243,18 +258,18 @@ describe('HtmlGenerator', () => {
                   level: 3,
                   text: '三级标题',
                   id: '三级标题',
-                  children: []
-                }
-              ]
-            }
-          ]
+                  children: [],
+                },
+              ],
+            },
+          ],
         },
         {
           level: 1,
           text: '另一个主标题',
           id: '另一个主标题',
-          children: []
-        }
+          children: [],
+        },
       ];
 
       const toc = (generator as any).generateTableOfContents(mockHeadings);
@@ -277,15 +292,15 @@ describe('HtmlGenerator', () => {
       expect(writeFileSync).toHaveBeenCalledWith(
         expect.stringContaining('styles.css'),
         expect.stringContaining('/* GitBook 样式 */'),
-        'utf-8'
+        'utf-8',
       );
     });
 
     it('应该包含响应式设计样式', () => {
       (generator as any).generateStyles();
 
-      const stylesCall = (writeFileSync as jest.Mock).mock.calls.find(
-        call => call[0].endsWith('styles.css')
+      const stylesCall = (writeFileSync as jest.Mock).mock.calls.find((call) =>
+        call[0].endsWith('styles.css'),
       );
       const styles = stylesCall[1];
 
@@ -304,20 +319,20 @@ describe('HtmlGenerator', () => {
       expect(writeFileSync).toHaveBeenCalledWith(
         expect.stringContaining('script.js'),
         expect.stringContaining('// GitBook 脚本'),
-        'utf-8'
+        'utf-8',
       );
     });
 
     it('应该包含平滑滚动功能', () => {
       (generator as any).generateScripts();
 
-      const scriptCall = (writeFileSync as jest.Mock).mock.calls.find(
-        call => call[0].endsWith('script.js')
+      const scriptCall = (writeFileSync as jest.Mock).mock.calls.find((call) =>
+        call[0].endsWith('script.js'),
       );
       const script = scriptCall[1];
 
       expect(script).toContain('scrollIntoView');
-      expect(script).toContain('behavior: \'smooth\'');
+      expect(script).toContain("behavior: 'smooth'");
       expect(script).toContain('sidebar-toggle');
     });
   });

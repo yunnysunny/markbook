@@ -1,9 +1,9 @@
 // GitBook 解析器
 import { readdirSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { MarkdownFile, TreeNode, ParserOptions } from '../types';
-import { MarkdownParser } from './MarkdownParser';
+import { dirname, join } from 'path';
+import type { MarkdownFile, ParserOptions, TreeNode } from '../types';
 import { isMarkdownFile, readFile } from '../utils';
+import { MarkdownParser } from './MarkdownParser';
 
 export class GitBookParser {
   private markdownParser: MarkdownParser;
@@ -14,7 +14,7 @@ export class GitBookParser {
     this.options = {
       encoding: 'utf-8',
       ignorePatterns: ['node_modules', '.git', 'dist', 'build'],
-      ...options
+      ...options,
     };
   }
 
@@ -24,7 +24,7 @@ export class GitBookParser {
   async parseProject(inputPath: string): Promise<TreeNode> {
     const rootNode: TreeNode = {
       title: 'Root',
-      children: []
+      children: [],
     };
 
     // 查找入口文件
@@ -44,7 +44,7 @@ export class GitBookParser {
    */
   private findEntryFile(inputPath: string): string | null {
     const entryFiles = ['README.md', 'SUMMARY.md', 'index.md'];
-    
+
     for (const fileName of entryFiles) {
       const filePath = join(inputPath, fileName);
       try {
@@ -62,8 +62,14 @@ export class GitBookParser {
   /**
    * 解析入口文件
    */
-  private async parseEntryFile(entryFilePath: string, rootNode: TreeNode): Promise<void> {
-    const content = await readFile(entryFilePath, this.options.encoding as BufferEncoding);
+  private async parseEntryFile(
+    entryFilePath: string,
+    rootNode: TreeNode,
+  ): Promise<void> {
+    const content = await readFile(
+      entryFilePath,
+      this.options.encoding as BufferEncoding,
+    );
     const lines = content.split('\n');
 
     for (const line of lines) {
@@ -73,7 +79,7 @@ export class GitBookParser {
         if (linkMatch) {
           const title = linkMatch[1];
           const link = linkMatch[2];
-          
+
           // 解析链接的 markdown 文件
           const fullPath = join(dirname(entryFilePath), link);
           const markdownFile = await this.parseMarkdownFile(fullPath);
@@ -83,7 +89,7 @@ export class GitBookParser {
               path: markdownFile.path,
               content: markdownFile.content,
               headings: markdownFile.headings,
-              children: []
+              children: [],
             };
             rootNode.children.push(node);
           }
@@ -95,9 +101,12 @@ export class GitBookParser {
   /**
    * 扫描所有 markdown 文件
    */
-  private async scanMarkdownFiles(inputPath: string, rootNode: TreeNode): Promise<void> {
+  private async scanMarkdownFiles(
+    inputPath: string,
+    rootNode: TreeNode,
+  ): Promise<void> {
     const files = this.getMarkdownFiles(inputPath);
-    
+
     for (const filePath of files) {
       const markdownFile = await this.parseMarkdownFile(filePath);
       if (markdownFile) {
@@ -106,7 +115,7 @@ export class GitBookParser {
           path: markdownFile.path,
           content: markdownFile.content,
           headings: markdownFile.headings,
-          children: []
+          children: [],
         };
         rootNode.children.push(node);
       }
@@ -118,17 +127,21 @@ export class GitBookParser {
    */
   private getMarkdownFiles(dirPath: string): string[] {
     const files: string[] = [];
-    
+
     try {
       const items = readdirSync(dirPath);
-      
+
       for (const item of items) {
         const itemPath = join(dirPath, item);
         const stat = statSync(itemPath);
-        
+
         if (stat.isDirectory()) {
           // 跳过忽略的目录
-          if (this.options.ignorePatterns?.some(pattern => item.includes(pattern))) {
+          if (
+            this.options.ignorePatterns?.some((pattern) =>
+              item.includes(pattern),
+            )
+          ) {
             continue;
           }
           files.push(...this.getMarkdownFiles(itemPath));
@@ -139,14 +152,16 @@ export class GitBookParser {
     } catch (error) {
       console.warn(`无法读取目录: ${dirPath}`, error);
     }
-    
+
     return files;
   }
 
   /**
    * 解析单个 markdown 文件
    */
-  private async parseMarkdownFile(filePath: string): Promise<MarkdownFile | null> {
+  private async parseMarkdownFile(
+    filePath: string,
+  ): Promise<MarkdownFile | null> {
     try {
       return await this.markdownParser.parseFile(filePath);
     } catch (error) {
