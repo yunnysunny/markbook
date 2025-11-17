@@ -13,7 +13,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": false,
+    "allowImportingTsExtensions": false
   },
   "include": [
     "src/**/*", 
