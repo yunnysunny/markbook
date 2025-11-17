@@ -6,7 +6,7 @@
   "type": "commonjs",
   "types": "dist/index.d.ts",
   "bin": {
-    "bookforge": "./dist/cli.js"
+    "bookforge": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -34,9 +34,10 @@
   "homepage": "https://github.com/yunnysunny/bookforge",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yunnysunny/bookforge.git"
+    "url": "git+https://github.com/yunnysunny/bookforge.git"
   },
   "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
     "access": "public",
     "provenance": true
   },

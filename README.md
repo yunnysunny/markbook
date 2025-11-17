@@ -13,7 +13,10 @@
 ## 安装
 
 ```bash
+# 安装命令支持 html
 pnpm install bookforge -g
+# 配置 puppeteer 支持pdf
+pnpm approve-builds -g
 ```
 
 ## 构建
