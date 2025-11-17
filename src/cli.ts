@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // 命令行接口
 
 import chalk from 'chalk';
@@ -10,8 +11,8 @@ import type { GitBookConfig } from './types/index.js';
 const program = new Command();
 
 program
-  .name('gitbook-parser')
-  .description('GitBook 解析器 - 将 markdown 文件转换为 HTML 网站或 PDF 文件')
+  .name('bookforge')
+  .description('bookforge - 将 markdown 文件转换为 HTML 网站或 PDF 文件')
   .version('1.0.0');
 
 program
