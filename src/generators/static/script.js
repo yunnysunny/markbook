@@ -16,43 +16,108 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 移动端侧边栏切换
-    const sidebarToggle = document.createElement('button');
-    sidebarToggle.innerHTML = '☰';
-    sidebarToggle.className = 'sidebar-toggle';
-    sidebarToggle.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1000;
-        background: #2c3e50;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 18px;
-        cursor: pointer;
-        display: none;
-    `;
+    // 侧边栏切换功能
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
     
-    document.body.appendChild(sidebarToggle);
+    if (!sidebarToggle || !sidebar) {
+        return;
+    }
     
-    const sidebar = document.querySelector('.sidebar');
+    // 从localStorage读取用户偏好
+    const STORAGE_KEY = 'sidebar-hidden';
     
-    sidebarToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('open');
-    });
+    // 判断是否为移动端
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
     
-    // 响应式检测
-    function checkScreenSize() {
-        if (window.innerWidth <= 768) {
-            sidebarToggle.style.display = 'block';
+    // 切换侧边栏显示/隐藏
+    function toggleSidebar() {
+        if (isMobile()) {
+            // 移动端：使用.open类控制显示
+            sidebar.classList.toggle('open');
         } else {
-            sidebarToggle.style.display = 'none';
+            // 桌面端：使用.hidden类控制显示，并保存到localStorage
+            const isCurrentlyHidden = sidebar.classList.contains('hidden');
+            
+            if (isCurrentlyHidden) {
+                sidebar.classList.remove('hidden');
+                localStorage.setItem(STORAGE_KEY, 'false');
+            } else {
+                sidebar.classList.add('hidden');
+                localStorage.setItem(STORAGE_KEY, 'true');
+            }
+        }
+    }
+    
+    // 初始化侧边栏状态
+    function initSidebar() {
+        if (isMobile()) {
+            // 移动端：默认隐藏
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('open');
+        } else {
+            // 桌面端：根据localStorage决定
+            const savedState = localStorage.getItem(STORAGE_KEY);
+            if (savedState === 'true') {
+                sidebar.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('hidden');
+            }
             sidebar.classList.remove('open');
         }
     }
     
-    window.addEventListener('resize', checkScreenSize);
-    checkScreenSize();
+    // 响应窗口大小变化
+    function handleResize() {
+        initSidebar();
+    }
+    
+    // 绑定点击事件
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    // 初始化
+    initSidebar();
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', handleResize);
+    
+    // 右侧目录树（TOC）切换功能
+    const tocToggle = document.getElementById('tocToggle');
+    const toc = document.getElementById('toc');
+    
+    if (tocToggle && toc) {
+        // 从localStorage读取TOC显示偏好
+        const TOC_STORAGE_KEY = 'toc-hidden';
+        
+        // 切换TOC显示/隐藏
+        function toggleToc() {
+            const isCurrentlyHidden = toc.classList.contains('hidden');
+            
+            if (isCurrentlyHidden) {
+                toc.classList.remove('hidden');
+                localStorage.setItem(TOC_STORAGE_KEY, 'false');
+            } else {
+                toc.classList.add('hidden');
+                localStorage.setItem(TOC_STORAGE_KEY, 'true');
+            }
+        }
+        
+        // 初始化TOC状态
+        function initToc() {
+            const savedState = localStorage.getItem(TOC_STORAGE_KEY);
+            if (savedState === 'true') {
+                toc.classList.add('hidden');
+            } else {
+                toc.classList.remove('hidden');
+            }
+        }
+        
+        // 绑定点击事件
+        tocToggle.addEventListener('click', toggleToc);
+        
+        // 初始化
+        initToc();
+    }
 });

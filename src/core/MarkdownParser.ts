@@ -4,7 +4,7 @@ import { copyFile } from 'fs/promises';
 import { marked, type Token } from 'marked';
 import { dirname, join } from 'path';
 import type { Heading, MarkdownFile } from '../types/index.js';
-import { generateHeadingId, mkdirAsync, readFile } from '../utils';
+import { generateIdFromText, mkdirAsync, readFile } from '../utils';
 
 export class MarkdownParser {
   private marked: typeof marked;
@@ -48,7 +48,7 @@ export class MarkdownParser {
       if (match) {
         const level = match[1].length;
         const text = match[2].trim();
-        const id = generateHeadingId(text);
+        const id = generateIdFromText(text);
 
         const heading: Heading = {
           level,

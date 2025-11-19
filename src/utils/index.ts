@@ -28,7 +28,7 @@ export function isMarkdownFile(filePath: string): boolean {
 /**
  * 生成标题 ID（用于锚点）
  */
-export function generateHeadingId(text: string): string {
+export function generateIdFromText(text: string): string {
   return (
     encodeURIComponent(text)
       .toLowerCase()

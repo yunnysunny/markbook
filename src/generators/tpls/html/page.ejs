@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="切换侧边栏">
+        <span class="toggle-icon">☰</span>
+    </button>
+    
     <div class="container">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h1><%= title %></h1>
             </div>
@@ -24,9 +28,16 @@
                 </article>
                 
                 <% if (toc) { %>
-                    <aside class="toc">
-                        <h3>目录</h3>
-                        <%- toc %>
+                    <aside class="toc" id="toc">
+                        <div class="toc-header">
+                            <h3>目录</h3>
+                            <button class="toc-toggle" id="tocToggle" aria-label="切换目录">
+                                <span class="toc-toggle-icon">×</span>
+                            </button>
+                        </div>
+                        <div class="toc-content">
+                            <%- toc %>
+                        </div>
                     </aside>
                 <% } %>
             </div>
