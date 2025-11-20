@@ -3,6 +3,7 @@
 import { access, constants, readFile as fsReadFile, mkdir } from 'fs/promises';
 import { basename, extname } from 'path';
 
+
 export async function mkdirAsync(path: string): Promise<string | undefined> {
   return await mkdir(path, { recursive: true });
 }
@@ -29,14 +30,16 @@ export function isMarkdownFile(filePath: string): boolean {
  * 生成标题 ID（用于锚点）
  */
 export function generateIdFromText(text: string): string {
-  return (
-    encodeURIComponent(text)
-      .toLowerCase()
-      // .replace(/[^\w\s-]/g, '')
-      // .replace(/\s+/g, '-')
-      // .replace(/-+/g, '-')
-      .trim()
-  );
+  let slug = text
+    .toLowerCase()
+    .trim()
+    .replace(/<[!\/a-z].*?>/gi, "")  // 移除 HTML 标签
+    .replace(/[\u2000-\u206F\u2E00-\u2E7F\\\\'!"#$%&()*+,./:;<=>?@[\\\]^`{|}~]/g, "")
+    .replace(/\s+/g, "-");           // 空白替换为 -
+
+  // 去掉前后 -
+  slug = slug.replace(/^-+|-+$/g, "");
+  return slug;
 }
 
 /**

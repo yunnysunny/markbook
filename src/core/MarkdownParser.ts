@@ -1,11 +1,19 @@
 // Markdown 解析器
 
 import { copyFile } from 'fs/promises';
-import { marked, type Token } from 'marked';
+import { marked, type Tokens, type Token } from 'marked';
 import { dirname, join } from 'path';
 import type { Heading, MarkdownFile } from '../types/index.js';
 import { generateIdFromText, mkdirAsync, readFile } from '../utils';
-
+const renderer = new marked.Renderer();
+renderer.heading = ({ tokens, depth }: Tokens.Heading) => {
+  const token = tokens[0] as unknown as Heading;
+  token.id = generateIdFromText(token.text);
+  return `<h${depth} id="${token.id}">
+  <a href="#${token.id}" class="anchor"></a>
+  ${token.text}
+</h${depth}>`;
+};
 export class MarkdownParser {
   private marked: typeof marked;
 
@@ -14,6 +22,7 @@ export class MarkdownParser {
     this.marked.setOptions({
       gfm: true,
       breaks: true,
+      renderer,
     });
   }
 
@@ -123,7 +132,7 @@ export class MarkdownParser {
           await mkdirAsync(imageToDir);
           await copyFile(imageFromPath, imageToPath);
         }
-      },
+      }
     });
     return html;
   }
