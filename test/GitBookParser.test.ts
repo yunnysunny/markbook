@@ -3,10 +3,10 @@
 // GitBookParser 测试
 import fs, { readdirSync, readFileSync, statSync } from 'fs';
 import path from 'path';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { GitBookParser } from '../src/core/GitBookParser';
 import type { MarkdownFile, ParserOptions, TreeNode } from '../src/types';
 import * as utils from '../src/utils';
-import { describe, beforeEach, it, expect, vi, Mock } from 'vitest';
 
 // 模拟 fs 模块
 // jest.mock('fs');
@@ -55,14 +55,14 @@ describe('GitBookParser', () => {
 
     it('应该处理解析失败的文件', async () => {
       const originalReadFile = utils.readFile;
-      vi
-        .spyOn(utils, 'readFile')
-        .mockImplementation(async (filename, options) => {
+      vi.spyOn(utils, 'readFile').mockImplementation(
+        async (filename, options) => {
           if (filename.toString().endsWith('error.md')) {
             throw new Error('文件读取错误');
           }
           return await originalReadFile.call(utils, filename, options);
-        });
+        },
+      );
 
       const result = await getResult('./fixtures/with-error');
 

@@ -1,8 +1,8 @@
 // PdfGenerator 测试
 import puppeteer from 'puppeteer';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { PdfGenerator } from '../src/generators/PdfGenerator';
 import type { TreeNode } from '../src/types';
-import { describe, beforeEach, it, expect, vi, Mock } from 'vitest';
 
 // 模拟 fs 模块
 // jest.mock('fs');

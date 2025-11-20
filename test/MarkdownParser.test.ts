@@ -1,6 +1,6 @@
 // MarkdownParser 测试
 
-import { describe, beforeEach, it, expect, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MarkdownParser } from '../src/core/MarkdownParser';
 import * as utils from '../src/utils';
 

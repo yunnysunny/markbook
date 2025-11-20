@@ -1,7 +1,8 @@
 // HtmlGenerator 测试
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+
 import { writeFileSync } from 'fs';
 import path from 'path';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HtmlGenerator } from '../src/generators/HtmlGenerator';
 import type { Heading, TreeNode } from '../src/types';
 
