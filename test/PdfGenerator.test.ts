@@ -2,12 +2,13 @@
 import puppeteer from 'puppeteer';
 import { PdfGenerator } from '../src/generators/PdfGenerator';
 import type { TreeNode } from '../src/types';
+import { describe, beforeEach, it, expect, vi, Mock } from 'vitest';
 
 // 模拟 fs 模块
 // jest.mock('fs');
 
 // 模拟 puppeteer
-jest.mock('puppeteer');
+vi.mock('puppeteer');
 
 describe('PdfGenerator', () => {
   let generator: PdfGenerator;
@@ -15,7 +16,7 @@ describe('PdfGenerator', () => {
 
   beforeEach(() => {
     generator = new PdfGenerator(mockOutputDir);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('generate', () => {
@@ -41,20 +42,20 @@ describe('PdfGenerator', () => {
       };
 
       const mockBrowser = {
-        newPage: jest.fn(),
-        close: jest.fn(),
+        newPage: vi.fn(),
+        close: vi.fn(),
       };
 
       const mockPage = {
-        setContent: jest.fn(),
-        pdf: jest.fn(),
+        setContent: vi.fn(),
+        pdf: vi.fn(),
       };
 
       // (existsSync as jest.Mock).mockReturnValue(false);
-      (puppeteer.launch as jest.Mock).mockResolvedValue(mockBrowser);
-      (mockBrowser.newPage as jest.Mock).mockResolvedValue(mockPage);
-      (mockPage.setContent as jest.Mock).mockResolvedValue(undefined);
-      (mockPage.pdf as jest.Mock).mockResolvedValue(Buffer.from('PDF content'));
+      (puppeteer.launch as Mock).mockResolvedValue(mockBrowser);
+      (mockBrowser.newPage as Mock).mockResolvedValue(mockPage);
+      (mockPage.setContent as Mock).mockResolvedValue(undefined);
+      (mockPage.pdf as Mock).mockResolvedValue(Buffer.from('PDF content'));
 
       await generator.generate(mockTree, '测试文档');
 
@@ -90,20 +91,20 @@ describe('PdfGenerator', () => {
       };
 
       const mockBrowser = {
-        newPage: jest.fn(),
-        close: jest.fn(),
+        newPage: vi.fn(),
+        close: vi.fn(),
       };
 
       const mockPage = {
-        setContent: jest.fn(),
-        pdf: jest.fn(),
+        setContent: vi.fn(),
+        pdf: vi.fn(),
       };
 
       // (existsSync as jest.Mock).mockReturnValue(false);
-      (puppeteer.launch as jest.Mock).mockResolvedValue(mockBrowser);
-      (mockBrowser.newPage as jest.Mock).mockResolvedValue(mockPage);
-      (mockPage.setContent as jest.Mock).mockResolvedValue(undefined);
-      (mockPage.pdf as jest.Mock).mockResolvedValue(Buffer.from('PDF content'));
+      (puppeteer.launch as Mock).mockResolvedValue(mockBrowser);
+      (mockBrowser.newPage as Mock).mockResolvedValue(mockPage);
+      (mockPage.setContent as Mock).mockResolvedValue(undefined);
+      (mockPage.pdf as Mock).mockResolvedValue(Buffer.from('PDF content'));
 
       await generator.generate(mockTree, '空文档');
 
@@ -133,20 +134,20 @@ describe('PdfGenerator', () => {
       };
 
       const mockBrowser = {
-        newPage: jest.fn(),
-        close: jest.fn(),
+        newPage: vi.fn(),
+        close: vi.fn(),
       };
 
       const mockPage = {
-        setContent: jest.fn(),
-        pdf: jest.fn(),
+        setContent: vi.fn(),
+        pdf: vi.fn(),
       };
 
       // (existsSync as jest.Mock).mockReturnValue(false);
-      (puppeteer.launch as jest.Mock).mockResolvedValue(mockBrowser);
-      (mockBrowser.newPage as jest.Mock).mockResolvedValue(mockPage);
-      (mockPage.setContent as jest.Mock).mockResolvedValue(undefined);
-      (mockPage.pdf as jest.Mock).mockResolvedValue(Buffer.from('PDF content'));
+      (puppeteer.launch as Mock).mockResolvedValue(mockBrowser);
+      (mockBrowser.newPage as Mock).mockResolvedValue(mockPage);
+      (mockPage.setContent as Mock).mockResolvedValue(undefined);
+      (mockPage.pdf as Mock).mockResolvedValue(Buffer.from('PDF content'));
 
       await generator.generate(mockTree, '多文档测试');
 

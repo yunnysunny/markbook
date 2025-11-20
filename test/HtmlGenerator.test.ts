@@ -1,5 +1,6 @@
 // HtmlGenerator 测试
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { writeFileSync } from 'fs';
 import path from 'path';
 import { HtmlGenerator } from '../src/generators/HtmlGenerator';
 import type { Heading, TreeNode } from '../src/types';
@@ -13,7 +14,7 @@ describe('HtmlGenerator', () => {
 
   beforeEach(() => {
     generator = new HtmlGenerator(mockOutputDir);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('generate', () => {

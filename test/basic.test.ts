@@ -1,4 +1,5 @@
 // 基本测试
+import { describe, test, expect } from 'vitest';
 import { generateIdFromText, isMarkdownFile } from '../src/utils';
 
 describe('基本功能测试', () => {

@@ -1,5 +1,6 @@
 // MarkdownParser 测试
 
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 import { MarkdownParser } from '../src/core/MarkdownParser';
 import * as utils from '../src/utils';
 
@@ -8,7 +9,7 @@ describe('MarkdownParser', () => {
 
   beforeEach(() => {
     parser = new MarkdownParser();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('parseFile', () => {
@@ -25,7 +26,7 @@ describe('MarkdownParser', () => {
 
 这是三级标题的内容。`;
 
-      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
+      vi.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = await parser.parseFile('test.md');
 
@@ -60,7 +61,7 @@ describe('MarkdownParser', () => {
 
     it('should handle file without headings', async () => {
       const mockContent = '这是没有标题的内容。\n\n只有普通文本。';
-      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
+      vi.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = await parser.parseFile('test.md');
 
@@ -81,7 +82,7 @@ describe('MarkdownParser', () => {
 
 子内容`;
 
-      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
+      vi.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = await parser.parseFile('test.md');
 
@@ -101,7 +102,7 @@ describe('MarkdownParser', () => {
 
 内容`;
 
-      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
+      vi.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       const result = await parser.parseFile('test.md');
 

@@ -6,6 +6,7 @@ import path from 'path';
 import { GitBookParser } from '../src/core/GitBookParser';
 import type { MarkdownFile, ParserOptions, TreeNode } from '../src/types';
 import * as utils from '../src/utils';
+import { describe, beforeEach, it, expect, vi, Mock } from 'vitest';
 
 // 模拟 fs 模块
 // jest.mock('fs');
@@ -15,7 +16,7 @@ describe('GitBookParser', () => {
 
   beforeEach(() => {
     parser = new GitBookParser();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   async function getResult(folder: string, options: ParserOptions = {}) {
@@ -54,7 +55,7 @@ describe('GitBookParser', () => {
 
     it('应该处理解析失败的文件', async () => {
       const originalReadFile = utils.readFile;
-      jest
+      vi
         .spyOn(utils, 'readFile')
         .mockImplementation(async (filename, options) => {
           if (filename.toString().endsWith('error.md')) {
@@ -79,7 +80,7 @@ describe('GitBookParser', () => {
     });
 
     it('应该找到 SUMMARY.md 当 README.md 不存在时', () => {
-      (statSync as jest.Mock)
+      (statSync as Mock)
         .mockReturnValueOnce({ isFile: () => false }) // README.md 不存在
         .mockReturnValueOnce({ isFile: () => true }); // SUMMARY.md 存在
 
@@ -89,7 +90,7 @@ describe('GitBookParser', () => {
     });
 
     it('应该找到 index.md 当前两个都不存在时', () => {
-      (statSync as jest.Mock)
+      (statSync as Mock)
         .mockReturnValueOnce({ isFile: () => false }) // README.md 不存在
         .mockReturnValueOnce({ isFile: () => false }) // SUMMARY.md 不存在
         .mockReturnValueOnce({ isFile: () => true }); // index.md 存在
@@ -100,7 +101,7 @@ describe('GitBookParser', () => {
     });
 
     it('应该返回 null 当没有入口文件时', () => {
-      (statSync as jest.Mock).mockReturnValue({ isFile: () => false });
+      (statSync as Mock).mockReturnValue({ isFile: () => false });
 
       const result = (parser as any).findEntryFile('./docs');
 
@@ -125,10 +126,10 @@ describe('GitBookParser', () => {
         headings: [],
       };
 
-      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
+      vi.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
       // 模拟 parseMarkdownFile 方法
-      const parseMarkdownFileSpy = jest
+      const parseMarkdownFileSpy = vi
         .spyOn(parser as any, 'parseMarkdownFile')
         .mockResolvedValue(mockMarkdownFile);
 
@@ -160,9 +161,9 @@ describe('GitBookParser', () => {
         headings: [],
       };
 
-      jest.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
+      vi.spyOn(utils, 'readFile').mockResolvedValue(mockContent);
 
-      const parseMarkdownFileSpy = jest
+      const parseMarkdownFileSpy = vi
         .spyOn(parser as any, 'parseMarkdownFile')
         .mockResolvedValue(mockMarkdownFile);
 
@@ -176,14 +177,14 @@ describe('GitBookParser', () => {
 
   describe.skip('getMarkdownFiles', () => {
     it('应该递归获取所有 markdown 文件', () => {
-      (statSync as jest.Mock)
+      (statSync as Mock)
         .mockReturnValueOnce({ isDirectory: () => true }) // docs 是目录
         .mockReturnValueOnce({ isFile: () => true }) // test.md 是文件
         .mockReturnValueOnce({ isDirectory: () => true }) // subdir 是目录
         .mockReturnValueOnce({ isFile: () => true }) // subtest.md 是文件
         .mockReturnValueOnce({ isFile: () => true }); // README.md 是文件
 
-      (readdirSync as jest.Mock)
+      (readdirSync as Mock)
         .mockReturnValueOnce(['test.md', 'subdir', 'README.md'])
         .mockReturnValueOnce(['subtest.md']);
 
@@ -197,13 +198,13 @@ describe('GitBookParser', () => {
     });
 
     it('应该忽略非 markdown 文件', () => {
-      (statSync as jest.Mock)
+      (statSync as Mock)
         .mockReturnValueOnce({ isDirectory: () => true }) // docs 是目录
         .mockReturnValueOnce({ isFile: () => true }) // test.txt 是文件
         .mockReturnValueOnce({ isFile: () => true }) // test.md 是文件
         .mockReturnValueOnce({ isFile: () => true }); // test.html 是文件
 
-      (readdirSync as jest.Mock).mockReturnValue([
+      (readdirSync as Mock).mockReturnValue([
         'test.txt',
         'test.md',
         'test.html',
